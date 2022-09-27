@@ -1,0 +1,42 @@
+name: Go package
+
+on: [push]
+
+jobs:
+  vagrant-up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cache Vagrant boxes
+        uses: actions/cache@v2
+        with:
+          path: ~/.vagrant.d/boxes
+          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
+          restore-keys: |
+            ${{ runner.os }}-vagrant-
+
+      - name: Show Vagrant version
+        run: vagrant --version
+
+      - name: Run vagrant up
+        run: vagrant up
+
+      - name: ssh into box after boot
+        run: vagrant ssh -c "echo 'hello world!'"
+
+  build:
+    runs-on: ubuntu-latest
+    needs: vagrant-up
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.15
+          check-latest: true
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: go test -v ./...
