@@ -13,7 +13,7 @@ jobs:
         run: |
           export DEBIAN_FRONTEND=noninteractive
           wget https://releases.hashicorp.com/vagrant/${VAGRANT_VERSION}/vagrant_${VAGRANT_VERSION}-1_i686.deb
-          dpkg -i vagrant_${VAGRANT_VERSION}-1_i686.deb
+          sudo dpkg -i vagrant_${VAGRANT_VERSION}-1_i686.deb
 
       - name: Cache Vagrant boxes
         uses: actions/cache@v2
